@@ -1,37 +1,49 @@
-import React, { useEffect, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import Header from './Header';
 import api from './Api';
+import { Table, TableRow, TableCell, Switch, Button } from '@material-ui/core';
+import DeleteIcon from '@material-ui/icons/Delete';
 
 
-function ListaPage(){
+function ListaPage() {
 
-    const [corretoras, setCorretoras ] = useState([]);
+    const [corretoras, setCorretoras] = useState([]);
 
-    async function loadData(){
-        
-            const response = await api.get('/').then(response =>{
+    async function loadData() {
+
+        const response = await api.get('/').then(response => {
             const corretoras = response.data;
             setCorretoras(corretoras);
         })
     }
 
-    useEffect(loadData,[]);
-    return <div>
-    <Header/>
-    
-    <table>
-        {
-            corretoras.map(item => (
-                <tr>
-                    <td>{item.id}</td>
-                    <td>{item.nomecorretora}</td>
-                    <td>{item.ativo}</td>
-                    <td>{item.valorporoperacao}</td>
-                </tr>
-            ))
-        }
-    </table>
-    </div>
+    useMemo(loadData, []);
+    return (
+        <>
+            <Header />
+            <Table style={{ marginTop: '80px' }}>
+
+                {
+                    corretoras.map(item => (
+                        <TableRow>
+                            <TableCell>{item.id}</TableCell>
+                            <TableCell>{item.nomecorretora}</TableCell>
+                            <TableCell>{item.ativo}</TableCell>
+                            <TableCell>{item.valorporoperacao}</TableCell>
+                            <TableCell>
+                                <Switch checked={item.comprado} color="primary" />
+                                <Button variant="outlined" color="secondary" size="small">
+                                    <DeleteIcon />Apagar
+                                    </Button>
+                            </TableCell>
+                        </TableRow>
+                    ))
+                }
+            </Table>
+
+            <Button></Button>
+        </>
+    )
 }
 
 export default ListaPage;
